@@ -3,7 +3,7 @@ Causal Inference-inspired Open Set Recognition.
 
 This is a description of the source code for "Open Set Recognition in Real World".
 
-<img src='feature_distribution.jpg' width=80%>
+<img src='1.jpg' width=80%>
 
 
 ## Introduction

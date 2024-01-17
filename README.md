@@ -22,6 +22,9 @@ RWOSR, thereby enhancing the feasibility of applying OSR in real-world settings.
 - tensorboard >= 1.14.0
 
 ## Quick Start
+### Data
+The data should be placed in `Data/`. Train data is `Data/Train/`. Test data is `Data/Test/`. Unknown classes is `Data/Unknown/`.
+
 ### Train CIOSR
 ```bash
 python RWOSR_train --gpu 0

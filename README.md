@@ -38,5 +38,5 @@ The training and testing settings of CIOSR are displayed in
 ops/config.py
 ```
 
-The trained models can be  obtained in [CIOSR-Resnet18](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link),[CIOSR-Resnet50](https://drive.google.com/file/d/1r1oKeP9qBDYLpELFrAX5MskSe9PZncL6/view?usp=drive_link),[CIOSR-Resnet34](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link).
+The trained models can be  obtained in [CIOSR-Resnet18](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link),[CIOSR-Resnet50](https://drive.google.com/file/d/165YRtsXv8dEsp7o7pgbN5qNBKKZu94Lr/view?usp=drive_link),[CIOSR-Resnet34](https://drive.google.com/file/d/1r1oKeP9qBDYLpELFrAX5MskSe9PZncL6/view?usp=drive_link).
 

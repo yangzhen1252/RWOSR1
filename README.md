@@ -46,6 +46,7 @@ ops/config.py
 ```
 
 The trained models can be  obtained in [CIOSR-Resnet18](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link),[CIOSR-Resnet50](https://drive.google.com/file/d/165YRtsXv8dEsp7o7pgbN5qNBKKZu94Lr/view?usp=drive_link),[CIOSR-Resnet34](https://drive.google.com/file/d/1r1oKeP9qBDYLpELFrAX5MskSe9PZncL6/view?usp=drive_link).
+If you want to get the results of Table 3, 4, 5 in the manuscript, just run 'OSR1.py'  on datasets NICO, VLCS, and PACS. The model used is [CIOSR-Resnet18](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link)(for the NICO dataset).
 
 
 ## Acknowledgement

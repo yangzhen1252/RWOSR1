@@ -4,6 +4,7 @@ Causal Inference-inspired Open Set Recognition.
 This is a description of the source code for "Open Set Recognition in Real World".
 
 <img src='1.jpg' width=80%>
+<img src='14.jpg' width=80%>
 
 
 ## Introduction
@@ -31,6 +32,7 @@ python RWOSR_train --gpu 0
 ```
 ### Test CIOSR
 
+
 ```bash
 python OSR1 --gpu 0
 ```
@@ -43,3 +45,6 @@ ops/config.py
 
 The trained models can be  obtained in [CIOSR-Resnet18](https://drive.google.com/file/d/1Pg7DqU05C4QvfhobDkmyTE-tUXibcIsm/view?usp=drive_link),[CIOSR-Resnet50](https://drive.google.com/file/d/165YRtsXv8dEsp7o7pgbN5qNBKKZu94Lr/view?usp=drive_link),[CIOSR-Resnet34](https://drive.google.com/file/d/1r1oKeP9qBDYLpELFrAX5MskSe9PZncL6/view?usp=drive_link).
 
+
+## Acknowledgement
+[StableNet](https://github.com/xxgege/StableNet), [UOSR](https://github.com/Jun-CEN/Unified_Open_Set_Recognition), [DIAS](https://github.com/wjun0830/Difficulty-Aware-Simulator),[OpenAUC](https://github.com/wang22ti/OpenAUC), [ARPL](https://github.com/iCGY96/ARPL), [OLTR](https://github.com/zhmiao/OpenLongTailRecognition-OLTR)

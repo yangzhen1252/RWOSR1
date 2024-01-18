@@ -27,7 +27,7 @@ RWOSR, thereby enhancing the feasibility of applying OSR in real-world settings.
 ### Data
 The data should be placed in `Data/`. Train data is `Data/Train/`. Test data is `Data/Test/`. Unknown classes is `Data/Unknown/`.
 
-Note: Training data and test data should not come from the same distribution, meaning that the distribution of training data is different from that of test data, but the categories are the same. `Data/Unknown/` is new/unknown category data.
+Note: Train data and test data should not come from the same distribution, meaning that the distribution of train data is different from that of test data, but the categories are the same. `Data/Unknown/` is new/unknown category data.
 ### Train CIOSR
 ```bash
 python RWOSR_train --gpu 0

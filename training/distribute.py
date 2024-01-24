@@ -65,31 +65,31 @@ def validate(val_loader, model,  epoch=0, test=True, args=None, tensor_writer=No
         features = torch.cat(features, dim=0).numpy()
         labels = torch.cat(labels, dim=0).numpy()
 
-        # 使用 t-SNE 算法将特征降维到 2D 空间
+        
         tsne = TSNE(n_components=2, random_state=42)
         features_2d = tsne.fit_transform(features)
 
-        # 获取类别标签的唯一值
+        
         unique_labels = np.unique(labels)
 
-        # 绘制分布图
+       
         plt.figure(figsize=(10, 8))
-        # 定义不同类别所使用的颜色
-        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] # 可根据类别数量自定义颜色
+        
+        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] 
         #colors = ['red', 'green', 'blue', 'yellow', 'orange', 'pink', 'cyan', 'saddlebrown','gray','purple']
         for i, label in enumerate(unique_labels):
-            # 找到属于当前类别的样本的索引
+            
             indices = np.where(labels == label)
-            # 取出属于当前类别的样本的特征
+            
             features_class = features_2d[indices]
-            # 绘制当前类别的散点图，并使用对应的颜色
+            
             plt.scatter(features_class[:, 0], features_class[:, 1], label=label, color=colors[i])
 
         plt.title('Feature Distribution by Class')
         plt.xlabel('Dimension 1')
         plt.ylabel('Dimension 2')
         plt.legend()
-        plt.savefig('feature_distributionun111.jpg')  # 保存分布图为 JPG 格式的图像
+        plt.savefig('feature_distributionun111.jpg')  
         plt.show()
 
 
@@ -144,23 +144,23 @@ def validate1(val_loader, model, epoch=0, test=True, args=None, tensor_writer=No
         cm = confusion_matrix(all_true, all_pred)
         cm_sum = np.sum(cm, axis=1, keepdims=True)
 
-        # 以百分比形式计算混淆矩阵
+        
         cm_percent = np.round((cm / cm_sum) * 100, 1)
-# 设置标签名称
-        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  # 根据你的分类类别数量设置
 
-# 绘制混淆矩阵图像
+        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  
+
+
         sns.heatmap(cm_percent, annot=True, fmt='.1f', cmap='Blues', xticklabels=labels, yticklabels=labels)
 
-        # 格式化百分比显示
+        
 
 
-        # 设置图像标题和坐标轴标签
+       
         plt.title('')
         plt.xlabel('')
         plt.ylabel('')
         plt.savefig('confusion_matrix.png')
-# 显示图像
+
         plt.show()
 def evaluation(net2, testloader, outloader,args=None):
     net2.eval()

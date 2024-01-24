@@ -201,8 +201,15 @@ def evaluation(net2, testloader, outloader,args=None):
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
                 print(f'netp_score: {logits}')
                 print(f'C_score: {out1}')
-                logits = torch.softmax(logits+out1 / 1, dim=1)
+                logits1 = torch.softmax(out1 / 1, dim=1)
+                confidence1 = logits1.data.max(1)[0]
+
+                confidence1[confidence1 < 0.5] = 0
+
+                logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
+                confidence[confidence < 0.5] = 0
+                confidence = (confidence + confidence1) / 2
                 for b in range(bsz):
                     probs[n] = confidence[b]
                     open_labels[n] = 1
@@ -243,8 +250,10 @@ def evaluation(net2, testloader, outloader,args=None):
                 logits, cfeatures, t, map = net2(data)
                 logits1 = torch.softmax(out1 / 1, dim=1)
                 confidence1 = logits1.data.max(1)[0]
+                confidence1[confidence1 < 0.5] = 0
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
+                confidence[confidence < 0.5] = 0
                 confidence = (confidence + confidence1) / 2
                 for b in range(bsz):
                     probs[n] = confidence[b]

@@ -182,9 +182,6 @@ def evaluation(net2, testloader, outloader,args=None):
 
                 # gcfeatures1 = torch.load('results/PACS/feature_dict2_183.pt')
 
-                output, cfeatures, t, map = net2(data)
-
-
                 score, scores = predict_class(map, gcfeatures, 32)
 
                 #  score2=predict_class2(cfeatures,gcfeatures1,128)
@@ -221,9 +218,34 @@ def evaluation(net2, testloader, outloader,args=None):
             bsz = labels.size(0)
             oodlabel = torch.zeros_like(labels) - 1
             with torch.set_grad_enabled(False):
-                logits, cfeatures,t,map = net2(data)
+
+                gcfeatures = torch.load('resultsFU/PACS/feature_dict1_196.pt')
+
+                # gcfeatures1 = torch.load('results/PACS/feature_dict2_183.pt')
+
+                score, scores = predict_class(map, gcfeatures, 32)
+
+                #  score2=predict_class2(cfeatures,gcfeatures1,128)
+
+                cc = labels[0].item()
+
+                if cc in score_dict:
+
+                    a = score_dict[cc]
+                    b = torch.tensor([score[cc]])
+                    score_dict[cc] = torch.cat([a, b])
+
+
+                else:
+                    score_dict[cc] = torch.tensor([score[cc]])
+
+                out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
+                logits, cfeatures, t, map = net2(data)
+                logits1 = torch.softmax(out1 / 1, dim=1)
+                confidence1 = logits1.data.max(1)[0]
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
+                confidence = (confidence + confidence1) / 2
                 for b in range(bsz):
                     probs[n] = confidence[b]
                     open_labels[n] = 0

@@ -221,10 +221,10 @@ def evaluation(net2, testloader, outloader,args=None):
                 predictions = logits.data.max(1)[1]
                 preval = logits.data.max(1)[0]
                 preval1 = logits1.data.max(1)[0]
-                if preval < 0.5 and preval1 < 0.5:
-                    tta += 1
+                if (preval > 0.5 or preval1 > 0.5) and (predictions == labels.data):
+                    correct += 1
                 total += labels.size(0)
-                correct += (predictions == labels.data).sum()
+               
 
                 pred_close.append((logits.data.cpu().numpy()+logits1.data.cpu().numpy())/2)
                 labels_close.append(labels.data.cpu().numpy())
@@ -272,7 +272,7 @@ def evaluation(net2, testloader, outloader,args=None):
     # Accuracy
 
 
-    acc = (float(correct-tta) * 100.) / float(total)
+    acc = (float(correct) * 100.) / float(total)
     #print('Acc: {:.5f}'.format(acc))
 
     pred_close = np.concatenate(pred_close, 0)

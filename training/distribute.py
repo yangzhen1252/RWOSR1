@@ -65,31 +65,31 @@ def validate(val_loader, model,  epoch=0, test=True, args=None, tensor_writer=No
         features = torch.cat(features, dim=0).numpy()
         labels = torch.cat(labels, dim=0).numpy()
 
-        
+
         tsne = TSNE(n_components=2, random_state=42)
         features_2d = tsne.fit_transform(features)
 
-        
+
         unique_labels = np.unique(labels)
 
-       
+
         plt.figure(figsize=(10, 8))
-        
-        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] 
+
+        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] # 可根据类别数量自定义颜色
         #colors = ['red', 'green', 'blue', 'yellow', 'orange', 'pink', 'cyan', 'saddlebrown','gray','purple']
         for i, label in enumerate(unique_labels):
-            
+
             indices = np.where(labels == label)
-            
+
             features_class = features_2d[indices]
-            
+
             plt.scatter(features_class[:, 0], features_class[:, 1], label=label, color=colors[i])
 
         plt.title('Feature Distribution by Class')
         plt.xlabel('Dimension 1')
         plt.ylabel('Dimension 2')
         plt.legend()
-        plt.savefig('feature_distributionun111.jpg')  
+        plt.savefig('feature_distributionun111.jpg')
         plt.show()
 
 
@@ -144,22 +144,22 @@ def validate1(val_loader, model, epoch=0, test=True, args=None, tensor_writer=No
         cm = confusion_matrix(all_true, all_pred)
         cm_sum = np.sum(cm, axis=1, keepdims=True)
 
-        
+
         cm_percent = np.round((cm / cm_sum) * 100, 1)
 
-        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  
+        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  # 根据你的分类类别数量设置
 
 
         sns.heatmap(cm_percent, annot=True, fmt='.1f', cmap='Blues', xticklabels=labels, yticklabels=labels)
 
-        
 
 
-       
+
+
         plt.title('')
         plt.xlabel('')
         plt.ylabel('')
-        plt.savefig('confusion_matrix.png')
+        plt.savefig('confusion_matrixa.png',dpi=500)
 
         plt.show()
 def evaluation(net2, testloader, outloader,args=None):
@@ -171,7 +171,7 @@ def evaluation(net2, testloader, outloader,args=None):
     probs = torch.zeros(50000)
     score_dict = {}
     score_dict.clear()
-
+    tta=0
     with torch.no_grad():
         for data, labels in testloader:
             data, labels = data.cuda(), labels.cuda()
@@ -182,6 +182,9 @@ def evaluation(net2, testloader, outloader,args=None):
 
                 # gcfeatures1 = torch.load('results/PACS/feature_dict2_183.pt')
 
+
+
+
                 score, scores = predict_class(map, gcfeatures, 32)
 
                 #  score2=predict_class2(cfeatures,gcfeatures1,128)
@@ -199,21 +202,31 @@ def evaluation(net2, testloader, outloader,args=None):
                     score_dict[cc] = torch.tensor([score[cc]])
 
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
-                print(f'netp_score: {logits}')
-                print(f'C_score: {out1}')
-                logits1 = torch.softmax(out1 / 1, dim=1)
+                # print(f'netp_score: {logits}')
+                # print(f'C_score: {out1}')
+                logits1 = torch.softmax( out1 / 1, dim=1)
                 confidence1 = logits1.data.max(1)[0]
+
+
+
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
-                confidence = (confidence + confidence1) / 2
+
+                confidence=(confidence+confidence1)/2
+
                 for b in range(bsz):
                     probs[n] = confidence[b]
                     open_labels[n] = 1
                     n += 1
                 predictions = logits.data.max(1)[1]
+                preval = logits.data.max(1)[0]
+                preval1 = logits1.data.max(1)[0]
+                if preval < 0.5 and preval1 < 0.5:
+                    tta += 1
                 total += labels.size(0)
                 correct += (predictions == labels.data).sum()
-                pred_close.append(logits.data.cpu().numpy())
+
+                pred_close.append((logits.data.cpu().numpy()+logits1.data.cpu().numpy())/2)
                 labels_close.append(labels.data.cpu().numpy())
 
         for batch_idx, (data, labels) in enumerate(outloader):
@@ -221,7 +234,6 @@ def evaluation(net2, testloader, outloader,args=None):
             bsz = labels.size(0)
             oodlabel = torch.zeros_like(labels) - 1
             with torch.set_grad_enabled(False):
-
                 gcfeatures = torch.load('resultsFU/PACS/feature_dict1_196.pt')
 
                 # gcfeatures1 = torch.load('results/PACS/feature_dict2_183.pt')
@@ -243,20 +255,24 @@ def evaluation(net2, testloader, outloader,args=None):
                     score_dict[cc] = torch.tensor([score[cc]])
 
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
-                logits, cfeatures, t, map = net2(data)
+                logits, cfeatures,t,map = net2(data)
                 logits1 = torch.softmax(out1 / 1, dim=1)
                 confidence1 = logits1.data.max(1)[0]
+
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
-                confidence = (confidence + confidence1) / 2
+
+                confidence = (confidence +confidence1)/2
                 for b in range(bsz):
                     probs[n] = confidence[b]
                     open_labels[n] = 0
                     n += 1
-                pred_open.append(logits.data.cpu().numpy())
+                pred_open.append((logits.data.cpu().numpy()+logits1.data.cpu().numpy())/2)
                 labels_open.append(oodlabel.data.cpu().numpy())
     # Accuracy
-    acc = float(correct) * 100. / float(total)
+
+
+    acc = (float(correct-tta) * 100.) / float(total)
     #print('Acc: {:.5f}'.format(acc))
 
     pred_close = np.concatenate(pred_close, 0)

@@ -238,7 +238,7 @@ def main_worker(ngpus_per_node, args):
 
     end_time = time.time()
     run_time = end_time - start_time
-    print(f"程序运行时间为：{run_time} 秒")
+   
    # validate1(test_loader, model,args=args)
    # print(acc)
     print(f'acc1: {acc1}')

@@ -75,7 +75,7 @@ def validate(val_loader, model,  epoch=0, test=True, args=None, tensor_writer=No
 
         plt.figure(figsize=(10, 8))
 
-        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] # 可根据类别数量自定义颜色
+        colors = ['red', 'green', 'blue', 'yellow', 'orange','pink','cyan','saddlebrown','gray','purple','black','brown','magenta'] 
         #colors = ['red', 'green', 'blue', 'yellow', 'orange', 'pink', 'cyan', 'saddlebrown','gray','purple']
         for i, label in enumerate(unique_labels):
 
@@ -147,7 +147,7 @@ def validate1(val_loader, model, epoch=0, test=True, args=None, tensor_writer=No
 
         cm_percent = np.round((cm / cm_sum) * 100, 1)
 
-        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  # 根据你的分类类别数量设置
+        labels = ['bear', 'bird', 'cat','cow','dog','elephant','horse','monkey','rat','sheep']  
 
 
         sns.heatmap(cm_percent, annot=True, fmt='.1f', cmap='Blues', xticklabels=labels, yticklabels=labels)

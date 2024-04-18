@@ -171,8 +171,7 @@ def evaluation(net2, testloader, outloader,args=None):
     probs = torch.zeros(50000)
     score_dict = {}
     score_dict.clear()
-    tta=0
-    tta1=0
+
     with torch.no_grad():
         for data, labels in testloader:
             data, labels = data.cuda(), labels.cuda()
@@ -198,8 +197,8 @@ def evaluation(net2, testloader, outloader,args=None):
                     score_dict[cc] = torch.tensor([score[cc]])
 
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)-0.4
-                print(f'out1: {out1}')
-                print(f'logits: {logits}')
+                print(f'CIOSR_score: {out1}')
+                print(f'model_score: {logits}')
                 confidence1 = out1.data.max(1)[0]
 
                 logits = torch.softmax(logits / 1, dim=1)
@@ -252,8 +251,7 @@ def evaluation(net2, testloader, outloader,args=None):
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)-0.4
 
                 confidence1 = out1.data.max(1)[0]
-                if confidence1<0.5:
-                    tta1=tta1+1
+
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
 
@@ -289,8 +287,7 @@ def evaluation(net2, testloader, outloader,args=None):
     open_labels = open_labels[:n].cpu().numpy()
     prob = probs[:n].reshape(-1, 1)
     auc = roc_auc_score(open_labels, prob)
-    print(tta)
-    print(tta1)
+
     return acc, auc, f
 
 

@@ -237,7 +237,7 @@ def evaluation(net2, testloader, outloader,args=None):
                 gcfeatures = torch.load('resultsFU/PACS/feature_dict1_196.pt')
 
                 # gcfeatures1 = torch.load('results/PACS/feature_dict2_183.pt')
-
+                logits, cfeatures,t,map = net2(data)
                 score, scores = predict_class(map, gcfeatures, 32)
 
                 #  score2=predict_class2(cfeatures,gcfeatures1,128)
@@ -255,7 +255,7 @@ def evaluation(net2, testloader, outloader,args=None):
                     score_dict[cc] = torch.tensor([score[cc]])
 
                 out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
-                logits, cfeatures,t,map = net2(data)
+                
                 logits1 = torch.softmax(out1 / 1, dim=1)
                 confidence1 = logits1.data.max(1)[0]
 

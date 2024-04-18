@@ -172,7 +172,7 @@ def evaluation(net2, testloader, outloader,args=None):
     score_dict = {}
     score_dict.clear()
     tta=0
-
+    tta1=0
     with torch.no_grad():
         for data, labels in testloader:
             data, labels = data.cuda(), labels.cuda()
@@ -197,29 +197,30 @@ def evaluation(net2, testloader, outloader,args=None):
                 else:
                     score_dict[cc] = torch.tensor([score[cc]])
 
-                out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
-
+                out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)-0.4
+                print(f'out1: {out1}')
+                print(f'logits: {logits}')
                 confidence1 = out1.data.max(1)[0]
 
                 logits = torch.softmax(logits / 1, dim=1)
 
                 confidence = logits.data.max(1)[0]
 
-                confidence=(confidence+confidence1)/2
+
 
                 for b in range(bsz):
-                    probs[n] = confidence[b]
+                    probs[n] = confidence1[b]
                     open_labels[n] = 1
                     n += 1
-                predictions = logits.data.max(1)[1]
+                predictions = out1.data.max(1)[1]
                 preval = logits.data.max(1)[0]
                 preval1 = out1.data.max(1)[0]
                 if (preval > 0.5 or preval1 > 0.5) and (predictions == labels.data):
                     correct += 1
                 total += labels.size(0)
                 #correct += (predictions == labels.data).sum()
-
-                pred_close.append((logits.data.cpu().numpy()+out1.data.cpu().numpy())/2)
+                #pred_close.append((logits.data.cpu().numpy() + out1.data.cpu().numpy()) / 2)
+                pred_close.append(out1.data.cpu().numpy())
                 labels_close.append(labels.data.cpu().numpy())
 
         for batch_idx, (data, labels) in enumerate(outloader):
@@ -248,18 +249,23 @@ def evaluation(net2, testloader, outloader,args=None):
                 else:
                     score_dict[cc] = torch.tensor([score[cc]])
 
-                out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)
+                out1 = score.unsqueeze(0).cuda(args.gpu, non_blocking=True)-0.4
 
                 confidence1 = out1.data.max(1)[0]
+                if confidence1<0.5:
+                    tta1=tta1+1
                 logits = torch.softmax(logits / 1, dim=1)
                 confidence = logits.data.max(1)[0]
-                confidence = (confidence +confidence1)/2
+
+
                 for b in range(bsz):
-                    probs[n] = confidence[b]
+                    probs[n] = confidence1[b]
                     open_labels[n] = 0
                     n += 1
-                pred_open.append((logits.data.cpu().numpy()+out1.data.cpu().numpy())/2)
+                pred_open.append(out1.data.cpu().numpy())
                 labels_open.append(oodlabel.data.cpu().numpy())
+
+
 
     # Accuracy
 
@@ -275,7 +281,7 @@ def evaluation(net2, testloader, outloader,args=None):
     total_pred_label = np.concatenate([pred1, pred2], axis=0)
     total_label = np.concatenate([labels_close, labels_open], axis=0)
     total_pred = np.concatenate([x1, x2], axis=0)
-    thr = 0.5 / 10 + (1 - 0.5)
+    thr = 0.5
     open_pred = (total_pred > thr - 0.05).astype(np.float32)
     f = f1_score(total_label, ((total_pred_label + 1) * open_pred) - 1, average='macro')
 
@@ -283,7 +289,8 @@ def evaluation(net2, testloader, outloader,args=None):
     open_labels = open_labels[:n].cpu().numpy()
     prob = probs[:n].reshape(-1, 1)
     auc = roc_auc_score(open_labels, prob)
-
+    print(tta)
+    print(tta1)
     return acc, auc, f
 
 

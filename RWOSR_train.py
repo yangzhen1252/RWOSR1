@@ -21,7 +21,7 @@ from torch.utils.tensorboard import SummaryWriter
 import models
 from ops.config import parser
 from training.schedule import lr_setter
-from training.trainlocal import train
+from training.train import train
 from training.validate import validate
 from utilis.meters import AverageMeter
 from utilis.saving import save_checkpoint
